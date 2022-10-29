@@ -1,0 +1,14 @@
+name: evision
+title: eVision
+username:
+account: gkouretas
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4752197
+bundleId: 5105433
+url: https://gkouretas.shinyapps.io/evision/
+when: 1633419731.68098
+lastSyncTime: 1633419731.68099
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: case_scraper.py|chromedriver|create_virtualenv.R|dataMatrix.csv|deploy.R|eVisionApp.R|FluNetInteractiveReport.csv|requirements.txt|setup.R|WHO_NREVSS_Clinical_Labs.csv|WHO_NREVSS_Combined_prior_to_2015_16.csv|WHO_NREVSS_Public_Health_Labs.csv
