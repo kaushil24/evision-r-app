@@ -224,7 +224,7 @@ function(input, output, session) {
     # install_tensorflow()
     # readRenviron(".env")
     # PYTHON_ENV = Sys.get("PYTHON_ENV_DIR")
-    PYTHON_ENV <- "./.python_env"
+    PYTHON_ENV <- "pyenv"
 
     library(reticulate)
     
@@ -234,13 +234,13 @@ function(input, output, session) {
     
     # source_python("google_scraper.py")
     # dates <- get_date("today 5-y")
-    system(paste(". ", PYTHON_ENV, "/bin/activate; python3 google_scraper.py --function get_date --get_date_time 'today 5-y'", sep=""))
+    system(paste("conda activate ", PYTHON_ENV, "; python3 google_scraper.py --function get_date --get_date_time 'today 5-y'", sep=""))
     dates = read.csv("dates.csv")$dates
     
     
     # source_python("case_scraper.py")
     # cdcwho(level)
-    system(paste(". ", PYTHON_ENV, "/bin/activate; python3 case_scraper.py --function cdcwho --level ", level, sep=""), timeout=15)
+    system(paste("conda activate ", PYTHON_ENV, "; python3 case_scraper.py --function cdcwho --level ", level, sep=""), timeout=15)
     case_data <- read.csv("ILINet.csv", skip = 1)
     
     out <- c()
