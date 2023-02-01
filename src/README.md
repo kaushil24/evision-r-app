@@ -12,5 +12,15 @@ sudo apt install -f ./google-chrome-stable_current_amd64.deb
 - The code currently takes care of installing the python dependencies.
 
 ### Start server
-- Go to parent dir and run: `R -e "shiny::runApp('evision-r-app')"`
+- Go to parent dir and run: `R -e "shiny::runApp('evision-r-app', port=5008)"`
   
+
+## Dockerization
+- Bulding image:  `docker build . -t rshiny`
+- Running the container `docker run rshiny -p 5008:5008`
+- To sh into the running docker container: 
+    ```
+    # get container id
+    docker ps
+    docker exec -it <container_id> sh
+    ```

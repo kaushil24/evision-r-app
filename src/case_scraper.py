@@ -215,7 +215,27 @@ def get_covid_data():
 # cdcwho('National') # level where data gets scraped
 # get_covid_data()
 
-# import argparse
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--function',
+    choices=['cdcwho'],
+    required=False,
+    type=str
+)
+parser.add_argument(
+    '--level',
+    type=str
+)
+
+args = parser.parse_args()
+
+function_name = args.function
+
+if function_name == 'cdcwho':
+    cdcwho(args.level)
+    print('Done scraping cdc who data. Yaay! ')
 
 # if __name__ == '__main__':
 #     parser = argparse.ArgumentParser()

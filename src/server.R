@@ -218,13 +218,14 @@ function(input, output, session) {
   
   get_data <- function(area, code, level, terms) {
     
-    reticulate::virtualenv_create("python_env", python = "python3")
-    reticulate::virtualenv_install("python_env", packages = c("pandas", "pytrends", "selenium", "webdriver-manager"))
-    # reticulate::virtualenv_install("python_env", packages = c("pandas", "pytrends"))
-    reticulate::use_virtualenv("python_env", required = TRUE)
+    # reticulate::virtualenv_create("python_env", python = "python3")
+    # reticulate::virtualenv_install("python_env", packages = c("pandas", "pytrends", "selenium", "webdriver-manager"))
+    # reticulate::use_virtualenv("python_env", required = TRUE)
     # install_tensorflow()
-    LOCAL_ENV_PATH <- "/home/k2/.virtualenvs/python_env"
-    
+    # readRenviron(".env")
+    # PYTHON_ENV = Sys.get("PYTHON_ENV_DIR")
+    PYTHON_ENV <- "./.python_env"
+
     library(reticulate)
     
     source_python("google_scraper.py")
@@ -233,14 +234,13 @@ function(input, output, session) {
     
     # source_python("google_scraper.py")
     # dates <- get_date("today 5-y")
-    system(paste(". ", LOCAL_ENV_PATH, "/bin/activate; python3 google_scraper.py --function get_date --get_date_time 'today 5-y'", sep=""))
+    system(paste(". ", PYTHON_ENV, "/bin/activate; python3 google_scraper.py --function get_date --get_date_time 'today 5-y'", sep=""))
     dates = read.csv("dates.csv")$dates
     
     
-    source_python("case_scraper.py")
-    cdcwho(level)
-    # system(paste(". ", LOCAL_ENV_PATH, "/bin/activate; python3 case_scraper.py --function get_date --get_date_time 'today 5-y'", sep=""))
-    # dates = read.csv("dates.csv")$dates
+    # source_python("case_scraper.py")
+    # cdcwho(level)
+    system(paste(". ", PYTHON_ENV, "/bin/activate; python3 case_scraper.py --function cdcwho --level ", level, sep=""), timeout=15)
     case_data <- read.csv("ILINet.csv", skip = 1)
     
     out <- c()
