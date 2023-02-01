@@ -48,24 +48,24 @@ function(input, output, session) {
   })
   
   observeEvent(input$test, {
-    showModal(modalDialog("Predictions unavailable at this time, website integration still in progress. Come back soon for full functionality."))
-    # showModal(modalDialog("Making prediction", footer=NULL))
-    # res <- evision_predict(input$location, as.numeric(input$weeks), input$level, input$keywords) # will pass predict ahead and other values
-    # iliRes <- res$iliRes
-    # iliAct <- res$iliAct
-    # err <- rmse(iliAct, iliRes)
-    # output$graph <- renderPlot({
-    #   graph <- plot_data(iliRes, iliAct, err)
-    # })
-    # output$confidence <- renderText({
-    #   error <- error_calc(iliRes, iliAct)
-    #   confidence <- toString((1 - error) * 100)
-    # })
-    # output$parameters <- renderText({
-    #   out <- paste("Area Predicted: ", input$main, ", Model: LSTM, Keyword(s): ", input$keywords, ", Epochs: ", input$ep, ", Case Data Source: CDC", sep="")
-    #   parameters <- toString(out)
-    # })
-    # removeModal()
+    # showModal(modalDialog("Predictions unavailable at this time, website integration still in progress. Come back soon for full functionality."))
+    showModal(modalDialog("Making prediction", footer=NULL))
+    res <- evision_predict(input$location, as.numeric(input$weeks), input$level, input$keywords) # will pass predict ahead and other values
+    iliRes <- res$iliRes
+    iliAct <- res$iliAct
+    err <- rmse(iliAct, iliRes)
+    output$graph <- renderPlot({
+    graph <- plot_data(iliRes, iliAct, err)
+    })
+    output$confidence <- renderText({
+     error <- error_calc(iliRes, iliAct)
+     confidence <- toString((1 - error) * 100)
+    })
+    output$parameters <- renderText({
+     out <- paste("Area Predicted: ", input$main, ", Model: LSTM, Keyword(s): ", input$keywords, ", Epochs: ", input$ep, ", Case Data Source: CDC", sep="")
+     parameters <- toString(out)
+    })
+    removeModal()
   })
   
   observeEvent(input$disease_button, {
@@ -116,7 +116,8 @@ function(input, output, session) {
     }
     
     terms <- as.list(strsplit(keywords, ", ")[[1]])
-    
+   
+    debug(get_data) 
     data <- get_data(area, code, level, terms)
     # data_csv <- read.csv(file = 'dataMatrix.csv', header=FALSE)
     
@@ -218,10 +219,11 @@ function(input, output, session) {
   get_data <- function(area, code, level, terms) {
     
     reticulate::virtualenv_create("python_env", python = "python3")
-    reticulate::virtualenv_install("python_env", packages = c("pandas", "pytrends", "selenium"))
+    reticulate::virtualenv_install("python_env", packages = c("pandas", "pytrends", "selenium", "webdriver-manager"))
     # reticulate::virtualenv_install("python_env", packages = c("pandas", "pytrends"))
     reticulate::use_virtualenv("python_env", required = TRUE)
     # install_tensorflow()
+    LOCAL_ENV_PATH <- "/home/k2/.virtualenvs/python_env"
     
     library(reticulate)
     
@@ -229,12 +231,16 @@ function(input, output, session) {
     
     google_data <- scrape(list(code), terms, 'en', 'today 5-y')
     
-    source_python("google_scraper.py")
-    dates <- get_date("today 5-y")
+    # source_python("google_scraper.py")
+    # dates <- get_date("today 5-y")
+    system(paste(". ", LOCAL_ENV_PATH, "/bin/activate; python3 google_scraper.py --function get_date --get_date_time 'today 5-y'", sep=""))
+    dates = read.csv("dates.csv")$dates
+    
     
     source_python("case_scraper.py")
     cdcwho(level)
-    
+    # system(paste(". ", LOCAL_ENV_PATH, "/bin/activate; python3 case_scraper.py --function get_date --get_date_time 'today 5-y'", sep=""))
+    # dates = read.csv("dates.csv")$dates
     case_data <- read.csv("ILINet.csv", skip = 1)
     
     out <- c()

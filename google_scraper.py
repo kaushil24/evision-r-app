@@ -31,12 +31,16 @@ def scrape(codes, terms, lang, time):
                 ggl = ggl.drop(columns = 'isPartial')
                 ggl_complete = pd.concat([ggl_complete, ggl], axis = 1)
                 search_count += 1
-            except Exception:
+            except Exception as ex:
                 search_count += 1
                 insufficient_data += 1
+                print(ex)
                 pass
     ggl_complete = ggl_complete.to_numpy()
-    print(ggl_complete)
+    pd.DataFrame(ggl_complete).to_csv('ggl_complete.csv', index=False)
+    pd.DataFrame([insufficient_data], columns=['incomplete_data']).to_csv('ggl_incomplete_data.csv', index=False)
+    # pd.DataFrame(ggl_complete, columns=['dates']).to_csv('dates.csv', index=False)
+    # print(ggl_complete)
     return [ggl_complete, insufficient_data]
 
 def get_date(time):
@@ -49,6 +53,8 @@ def get_date(time):
     times = list(indexes.to_pydatetime())
     for i in range(0, len(times)):
         dates.append(times[i].strftime('%Y-%m-%d'))
+
+    pd.DataFrame(dates, columns=['dates']).to_csv('dates.csv', index=False)
     return dates
 
 
@@ -97,4 +103,56 @@ def get_date(time):
 # print(dates)
 # file.to_csv('test.csv');
 
-# scrape(['US-CA'], ['loss of smell', 'loss of taste'], 'en', '2020-01-26 2021-02-12')
+# scrape(['US'], ['cough', 'flu', 'tamiflu', 'sore throat'], 'en', 'today 5-y')
+
+
+import argparse
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--function',
+        choices=['get_date', 'scrape'],
+        required=False,
+        type=str
+    )
+    parser.add_argument(
+        '--get_date_time',
+        type=str
+    )
+    parser.add_argument(
+        '--codes',
+        nargs='*',
+        type=str,
+    )
+    parser.add_argument(
+        '--terms',
+        nargs='*',
+        type=str
+    )
+    parser.add_argument(
+        '--lang',
+        default='en',
+        type=str
+    )
+    parser.add_argument(
+        '--scrape_time',
+        type=str
+    )
+    args = parser.parse_args()
+    
+    function_name = args.function
+    if function_name == 'get_date':
+        time = args.get_date_time
+        get_date(time)
+
+    elif function_name == 'scrape':
+        codes = args.codes
+        terms = args.terms
+        lang = args.lang
+        time = args.scrape_time
+        scrape(codes, terms, lang, time)
+
+# terms = ['cough', 'flu', 'tamiflu', 'sore throat']
+# code = ['US']
+# 

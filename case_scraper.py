@@ -9,6 +9,7 @@ from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
+from webdriver_manager.chrome import ChromeDriverManager
 
 def whoflunet(name, week):
     # reads list of countries that who flnet data exists for
@@ -141,14 +142,20 @@ def extract_zip(zip):
         os.remove(zip)
 
 def chromeSetUp():
-    chromeOptions = Options()
-    if bool(os.environ.get("GOOGLE_CHROME_BIN")): chromeOptions.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    chromeOptions.headless = True
-    chromeOptions.add_argument("--disable-dev-shm-usage")
-    chromeOptions.add_argument("--no-sandbox")
-    # webdriver executes chrome and goes to flunet app
-    PATH = './chromedriver' # path to location of your chromedriver goes here
-    driver = webdriver.Chrome(PATH, options=chromeOptions)
+#     chromeOptions = Options()
+#     if bool(os.environ.get("GOOGLE_CHROME_BIN")): chromeOptions.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+#     chromeOptions.headless = True
+#     chromeOptions.add_argument("--disable-dev-shm-usage")
+#     chromeOptions.add_argument("--no-sandbox")
+#     # webdriver executes chrome and goes to flunet app
+#     PATH = './chromedriver' # path to location of your chromedriver goes here
+#     driver = webdriver.Chrome(PATH, options=chromeOptions)
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+
     return driver
 
 def directory(): # creates necessary directory for
@@ -205,5 +212,20 @@ def get_covid_data():
 
 # dir = directory() # creates base directory
 # whoflunet("Greece", 53) # put 53 to get all weeks
-cdcwho('National') # level where data gets scraped
+# cdcwho('National') # level where data gets scraped
 # get_covid_data()
+
+# import argparse
+
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument(
+#         '--function',
+#         choices=['get_date', 'scrape'],
+#         required=False,
+#         type=str
+#     )
+#     parser.add_argument(
+#         '--get_date_time',
+#         type=str
+#     )

@@ -1,3 +1,4 @@
 selenium==3.141.0
 pytrends==4.7.3
 pandas==1.1.3
+webdriver-manager 
