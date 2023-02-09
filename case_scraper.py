@@ -138,7 +138,8 @@ def cdcwho(level, states = 'all'):
 def extract_zip(zip):
     with zipfile.ZipFile(zip, "r") as zip_ref:
         zip_ref.extractall(zip.split('FluViewPhase2Data.zip')[0])
-        os.remove(zip)
+    zip_ref.close()
+    os.remove(zip)
 
 def chromeSetUp():
     chromeOptions = Options()
@@ -203,7 +204,7 @@ def get_covid_data():
                 os.remove(files) # removes files",
     Repo.clone_from(url, dir)
 
-# dir = directory() # creates base directory
+dir = directory() # creates base directory
 # whoflunet("Greece", 53) # put 53 to get all weeks
-cdcwho('National') # level where data gets scraped
+# cdcwho('National') # level where data gets scraped
 # get_covid_data()
