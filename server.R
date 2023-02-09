@@ -48,24 +48,24 @@ function(input, output, session) {
   })
   
   observeEvent(input$test, {
-    showModal(modalDialog("Predictions unavailable at this time, website integration still in progress. Come back soon for full functionality."))
-    # showModal(modalDialog("Making prediction", footer=NULL))
-    # res <- evision_predict(input$location, as.numeric(input$weeks), input$level, input$keywords) # will pass predict ahead and other values
-    # iliRes <- res$iliRes
-    # iliAct <- res$iliAct
-    # err <- rmse(iliAct, iliRes)
-    # output$graph <- renderPlot({
-    #   graph <- plot_data(iliRes, iliAct, err)
-    # })
-    # output$confidence <- renderText({
-    #   error <- error_calc(iliRes, iliAct)
-    #   confidence <- toString((1 - error) * 100)
-    # })
-    # output$parameters <- renderText({
-    #   out <- paste("Area Predicted: ", input$main, ", Model: LSTM, Keyword(s): ", input$keywords, ", Epochs: ", input$ep, ", Case Data Source: CDC", sep="")
-    #   parameters <- toString(out)
-    # })
-    # removeModal()
+    # showModal(modalDialog("Predictions unavailable at this time, website integration still in progress. Come back soon for full functionality."))
+    showModal(modalDialog("Making prediction", footer=NULL))
+    res <- evision_predict(input$location, as.numeric(input$weeks), input$level, input$keywords) # will pass predict ahead and other values
+    iliRes <- res$iliRes
+    iliAct <- res$iliAct
+    err <- rmse(iliAct, iliRes)
+    output$graph <- renderPlot({
+      graph <- plot_data(iliRes, iliAct, err)
+    })
+    output$confidence <- renderText({
+      error <- error_calc(iliRes, iliAct)
+      confidence <- toString((1 - error) * 100)
+    })
+    output$parameters <- renderText({
+      out <- paste("Area Predicted: ", input$main, ", Model: LSTM, Keyword(s): ", input$keywords, ", Epochs: ", input$ep, ", Case Data Source: CDC", sep="")
+      parameters <- toString(out)
+    })
+    removeModal()
   })
   
   observeEvent(input$disease_button, {
